@@ -1,0 +1,1 @@
+* Corriger les maladresses de code/structure (voir commentaires)

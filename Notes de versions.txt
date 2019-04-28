@@ -1,0 +1,11 @@
+L’étoile (*) désigne les versions majeures
+
+v1.0* : première version avec des graphes non orientés
+
+v1.1 : possibilité de mettre des poids décimaux et des sommets de trois caractères
+       version de transition avec préparation de l’orientation
+
+v1.2* : possibilité d’orienter le graphe ; dans ce cas Euler est désactivé
+
+v1.3 : traitement différent des fenêtres qui s’ouvrent pour les centrer même sous windows
+       changement du nom du fichier principal en Pygraphe (au lieu de Main)
