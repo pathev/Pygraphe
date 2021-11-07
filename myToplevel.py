@@ -8,14 +8,26 @@ class MyToplevel(Toplevel):
         y=str(self.master.winfo_rooty()+self.master.winfo_height()//2-height//2)
         self.geometry("+"+x+"+"+y)
         self.wait_visibility()
-        self.grab_set()
+        grab=False
+        while not grab:
+            try:
+                self.grab_set()
+                grab=True
+            except:
+                grab=False
 
     def deiconify(self):
         x=str(self.master.winfo_rootx()+self.master.winfo_width()//2-self.winfo_width()//2)
         y=str(self.master.winfo_rooty()+self.master.winfo_height()//2-self.winfo_height()//2)
         self.geometry("+"+x+"+"+y)
         Toplevel.deiconify(self)
-        self.grab_set()
+        grab=False
+        while not grab:
+            try:
+                self.grab_set()
+                grab=True
+            except:
+                grab=False
 
     def withdraw(self):
         Toplevel.withdraw(self)

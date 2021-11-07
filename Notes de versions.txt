@@ -9,3 +9,5 @@ v1.2* : possibilité d’orienter le graphe ; dans ce cas Euler est désactivé
 
 v1.3 : traitement différent des fenêtres qui s’ouvrent pour les centrer même sous windows
        changement du nom du fichier principal en Pygraphe (au lieu de Main)
+
+v1.4 : correction d’un bug sur le grab_set() apparu suite à une version différente de Python
