@@ -11,3 +11,5 @@ v1.3 : traitement différent des fenêtres qui s’ouvrent pour les centrer mêm
        changement du nom du fichier principal en Pygraphe (au lieu de Main)
 
 v1.4 : correction d’un bug sur le grab_set() apparu suite à une version différente de Python
+
+v1.5 : ajout d’une colonne dans les représentations du tableau de l’algorithme de Dijkstra, et amélioration des lignes verticales dans ce même tableau en LaTeX.

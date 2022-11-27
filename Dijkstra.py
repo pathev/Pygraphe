@@ -10,26 +10,26 @@ def Moore_Dijkstra(Matrice,depart,arrivee,Noms,latex=False): # Algorithme princi
     tableau=[]
     if latex:
         code="%Nécessite le package ulem\n\\begin{center}\n"
-        code+="\\begin{tabular}{|*{"+str(n)+"}{c|}}\n"
+        code+="\\begin{tabular}{|*{"+str(n)+"}{c|}l|}\n"
         code+="\\hline\n"
         for nom in Noms:
             code+=" "+nom+" &"
-        code=code[:-1]+" \\\\\n"
+        code+=" Choix \\\\\n"
         code+="\\hline\n"
         for nom in Noms:
             if nom==Noms[depart]:
                 code+=" 0 &"
             else:
                 code+=" $\\infty$ &"
-        code=code[:-1]+" \\\\\n"
+        code+=" "+Noms[depart]+"(0) \\\\\n"
         code+="\\hline\n"
     else:
-        tableau+=[[[nom] for nom in Noms]]
-        tableau+=[[["∞"] for nom in Noms]]
+        tableau+=[[[nom] for nom in Noms]+[["Choix"]]]
+        tableau+=[[["∞"] for nom in Noms]+[[Noms[depart]+"(0)"]]]
         tableau[-1][depart]=["0"]
     while not etat[arrivee][0]:
         dactuel=etat[actuel][2]
-        min=None
+        mini=None
         futuractuel=None
         ligne=[]
         for i in range(n):
@@ -65,17 +65,18 @@ def Moore_Dijkstra(Matrice,depart,arrivee,Noms,latex=False): # Algorithme princi
                         ligne+=[["∞"]]
                     else:
                         ligne+=[[strp(di)+"("+Noms[etat[i][1]]+")"]]
-                if di != None and (min == None or di<min):
-                    min=di
+                if di != None and (mini == None or di<mini):
+                    mini=di
                     futuractuel=i
             elif latex:
-                code+=" | &"
+                code+=" \\vrule &"
             else:
                 ligne+=[["|"]]
         if latex:
-            code=code[:-1]+" \\\\\n"
+            code+=" "+Noms[futuractuel]+"("+strp(mini)+") \\\\\n"
             code+="\\hline\n"
         else:
+            ligne+=[[Noms[futuractuel]+"("+strp(mini)+")"]]
             tableau+=[ligne]
         actuel=futuractuel
         etat[actuel][0]=True
