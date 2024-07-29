@@ -1,6 +1,5 @@
 from tkinter import *
 import importlib
-import imp
 
 from myToplevel import MyToplevel
 
@@ -373,8 +372,8 @@ class ControllerCharge(Button):
 
     def charge(self):
         try:
+            importlib.invalidate_caches()
             mod = importlib.import_module("Save."+self.entry_nom.get())
-            mod = imp.reload(mod) # pour permettre le rechargement en cas de modification
             self.model.Clear()
             for nom,x,y in mod.S:
                 Sommet(self.model,self.fen,self.canvas,x,y,nom=nom)
