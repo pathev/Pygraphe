@@ -97,55 +97,15 @@ class Model:
             G.creer_arete_noms(a.s1.nom,a.s2.nom,a.poids)
         return G
 
-    def Sauve_code(self):
+    def get_dict(self):
 
+        dic = {}
         n=len(self.sommets)
-        code="S=["
-        i=0
-        while i<n:
-            s=self.sommets[i]
-            code+="['"+s.nom+"',"+str(s.x)+","+str(s.y)+"]"
-            if i<n-1:
-                code+=",\n   "
-            else:
-                code+="]\n"
-            i+=1
+        dic['S']=[[s.nom, s.x, s.y] for s in self.sommets]
+        dic['A']=[[a.s1.nom,a.s2.nom,a.poids,a.p] for a in self.aretes]
+        dic['o']=self.oriente.get()
 
-        n=len(self.aretes)
-        code+="A=["
-        i=0
-        while i<n:
-            a=self.aretes[i]
-            poids=float(a.poids)
-            st=str(poids)
-            if poids.is_integer():
-                st=st[:-2]
-            code+="['"+a.s1.nom+"','"+a.s2.nom+"',"+st+","+str(a.p)+"]"
-            if i<n-1:
-                code+=",\n   "
-            else:
-                code+="]\n"
-            i+=1
-
-        code+="o="+str(self.oriente.get())+"\n"
-
-        return code
-
-    def Sauve_lists(self):
-
-        n=len(self.sommets)
-        S=[]
-        for i in range(n):
-            s=self.sommets[i]
-            S+=[[s.nom,s.x,s.y]]
-
-        n=len(self.aretes)
-        A=[]
-        for i in range(n):
-            a=self.aretes[i]
-            A+=[[a.s1.nom,a.s2.nom,a.poids,a.p]]
-
-        return S,A
+        return dic
 
     def Clear(self):
 

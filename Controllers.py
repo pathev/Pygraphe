@@ -1,5 +1,6 @@
 from tkinter import *
-import importlib
+from tkinter.filedialog import askopenfile, asksaveasfile
+import json
 
 from myToplevel import MyToplevel
 
@@ -329,131 +330,38 @@ class ControllerEfface(Button):
 class ControllerCharge(Button):
 
     def __init__(self,model,fen,widget,canvas,state=NORMAL):
-        Button.__init__(self,widget,text="Charger",command=self.config,width=9,state=state)
-        self.model=model
-        self.fen=fen
-        self.canvas=canvas
-        self.popup=None
-
-    def config(self):
-
-        if self.popup==None:
-            self.popup=MyToplevel(master=self.fen,width=266,height=48,bg="white")
-            self.popup.protocol('WM_DELETE_WINDOW',lambda :self.popup.withdraw())
-            self.popup.pack_propagate(0)
-            self.popup.resizable(width=FALSE,height=FALSE)
-            self.popup.title("Chargement")
-
-            self.label_nom=Label(self.popup,text="Nom de fichier :",bg="white")
-            self.label_nom.grid(row=0,column=0)
-
-            self.entry_nom=Entry(self.popup)
-            self.entry_nom.grid(row=0,column=1)
-            self.entry_nom.focus()
-            self.entry_nom.bind("<Return>",lambda e:self.charge())
-            self.entry_nom.bind("<KP_Enter>",lambda e:self.charge())
-
-            self.button_annul=Button(self.popup,text="Annuler",command=self.popup.withdraw)
-            self.button_annul.grid(row=2,column=0)
-            self.button_annul.bind("<Return>",lambda e:self.popup.withdraw())
-            self.button_annul.bind("<KP_Enter>",lambda e:self.popup.withdraw())
-
-            self.button_go=Button(self.popup,text="Charger",command=self.charge)
-            self.button_go.grid(row=2,column=1)
-            self.button_go.bind("<Return>",lambda e:self.charge())
-            self.button_go.bind("<KP_Enter>",lambda e:self.charge())
-
-            self.label_erreur=Label(self.popup,text="Erreur de chargement",fg="red",bg="white")
-
-            self.popup.bind("<Escape>",lambda e:self.popup.withdraw())
-        else:
-            self.label_erreur.grid_forget()
-            self.popup.deiconify()
+        Button.__init__(self,widget,text="Charger",command=self.charge,width=9,state=state)
+        self.model = model
+        self.fen = fen
+        self.canvas = canvas
 
     def charge(self):
-        try:
-            importlib.invalidate_caches()
-            mod = importlib.import_module("Save."+self.entry_nom.get())
+        file = askopenfile(filetypes = [("Graph files","*.gr")])
+        if file:
+            dic = json.load(file)
             self.model.Clear()
-            for nom,x,y in mod.S:
+            for nom,x,y in dic['S']:
                 Sommet(self.model,self.fen,self.canvas,x,y,nom=nom)
-            for s1,s2,poids,p in mod.A:
+            for s1,s2,poids,p in dic['A']:
                 Arete(self.model,self.fen,self.canvas,
                       s1=self.model.get_sommet(s1),
                       s2=self.model.get_sommet(s2),
                       poids=float(poids),p=p)
-            self.model.oriente.set(mod.o)
-            self.popup.withdraw()
+            self.model.oriente.set(dic['o'])
             self.canvas.colors_change()
-        except:
-            self.label_erreur.grid(row=1,column=0,columnspan=2)
 
 class ControllerSauve(Button):
 
     def __init__(self,model,fen,widget,canvas,state=NORMAL):
-        Button.__init__(self,widget,text="Sauver",command=self.config,width=9,state=state)
-        self.model=model
-        self.fen=fen
-        self.canvas=canvas
-        self.popup=None
-        self.overwrite=IntVar()
-
-    def config(self):
-
-        if self.popup==None:
-            self.popup=MyToplevel(master=self.fen,width=266,height=48,bg="white")
-            self.popup.protocol('WM_DELETE_WINDOW',lambda :self.popup.withdraw())
-            self.popup.pack_propagate(0)
-            self.popup.resizable(width=FALSE,height=FALSE)
-            self.popup.title("Sauvegarde")
-
-            self.label_nom=Label(self.popup,text="Nom de fichier :",bg="white")
-            self.label_nom.grid(row=0,column=0)
-
-            self.entry_nom=Entry(self.popup)
-            self.entry_nom.grid(row=0,column=1)
-            self.entry_nom.focus()
-            self.entry_nom.bind("<Return>",lambda e:self.sauve())
-            self.entry_nom.bind("<KP_Enter>",lambda e:self.sauve())
-
-            self.label_existe=Label(self.popup,text="Le fichier existe déjà",fg="red",bg="white")
-
-            self.check_overwrite=Checkbutton(self.popup,text="Écraser",variable=self.overwrite)
-
-            self.button_annul=Button(self.popup,text="Annuler",command=self.popup.withdraw)
-            self.button_annul.grid(row=2,column=0)
-            self.button_annul.bind("<Return>",lambda e:self.popup.withdraw())
-            self.button_annul.bind("<KP_Enter>",lambda e:self.popup.withdraw())
-
-            self.button_go=Button(self.popup,text="Sauver",command=self.sauve)
-            self.button_go.grid(row=2,column=1)
-            self.button_go.bind("<Return>",lambda e:self.sauve())
-            self.button_go.bind("<KP_Enter>",lambda e:self.sauve())
-
-            self.popup.bind("<Escape>",lambda e:self.popup.withdraw())
-        else:
-            self.popup.deiconify()
+        Button.__init__(self,widget,text="Sauver",command=self.sauve,width=9,state=state)
+        self.model = model
+        self.fen = fen
+        self.canvas = canvas
 
     def sauve(self):
-        code=self.model.Sauve_code()
-        nomfichier="Save/"+self.entry_nom.get()+".py"
-        try:
-          with open(nomfichier):
-            if self.overwrite.get()==1:
-              self.label_existe.grid_forget()
-              self.check_overwrite.grid_forget()
-              Go=True
-              self.overwrite.set(0)
-            else:
-              self.label_existe.grid(row=1,column=0)
-              self.check_overwrite.grid(row=1,column=1)
-              Go=False
-        except OSError:
-            Go=True
-        if Go:
-            fichier=open(nomfichier,mode='w',encoding='utf-8')
-            fichier.write(code)
-            self.popup.withdraw()
+        file = asksaveasfile(filetypes = [("Graph files","*.gr")])
+        if file:
+            file.write(json.dumps(self.model.get_dict()))
 
 class ControllerTikz(Button):
 
@@ -478,7 +386,8 @@ class ControllerTikz(Button):
         code+="                    s/.style={draw,circle},%\n"
         code+="                    p/.style={fill=white,inner sep=2pt}]\n"
 
-        S,A=self.model.Sauve_lists()
+        d = self.model.get_dict()
+        S,A=d['S'],d['A']
 
         for nom,x,y in S:
             code+="\\node[s] ("+nom+") at ("+str(x)+","+str(500-y)+") {"+nom+"} ;\n"
@@ -604,6 +513,10 @@ class ControllerEuler(Button):
             self.label_path.configure(text=self.kind)
 
             self.popup.deiconify()
+
+def ajoute_nom_fichier(filename,widget):
+    widget.delete(0,END)
+    widget.insert(0,filename)
 
 def UpdateOriente(model,bouton_Euler):
 

@@ -13,3 +13,5 @@ v1.3 : traitement différent des fenêtres qui s’ouvrent pour les centrer mêm
 v1.4 : correction d’un bug sur le grab_set() apparu suite à une version différente de Python
 
 v1.5 : ajout d’une colonne dans les représentations du tableau de l’algorithme de Dijkstra, et amélioration des lignes verticales dans ce même tableau en LaTeX.
+
+v1.6 : chargement et sauvegarde par le biais de tkinter.filedialog ; changement de codage des fichiers de sauvegarde (en fichiers json)

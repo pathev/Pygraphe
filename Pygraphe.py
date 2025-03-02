@@ -6,9 +6,9 @@
 #         Patrick Thévenon          #
 #                                   #
 #         de Mars 2014              #
-#              à Mars 2015          #
+#              à Mars 2025          #
 #                                   #
-# version : 1.5                     #
+# version : 1.6                     #
 #####################################
 
 from tkinter import *
@@ -26,7 +26,8 @@ if __name__ == '__main__':
 
     frame_outils=Frame(fen,bg='white') # Outils
 
-    radio_outils=[ControllerOutil(model,frame_outils,zone_graphe,text,mode) for text,mode in model.outils]
+    radio_outils=[ControllerOutil(model,frame_outils,zone_graphe,text,mode)
+                  for text,mode in model.outils]
     lno=range(len(radio_outils))
     for i in lno:
         radio_outils[i].grid(row=0,column=i,sticky='W')
