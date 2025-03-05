@@ -2,11 +2,13 @@ from tkinter import *
 from myToplevel import MyToplevel
 
 delcolor="red"
-defcolor="black"
+defcolor={'fleche':'gray','poids':"black"}
 actcolor="orange"
 
 def strp(poids): # chaîne de caractère pour un float qui peut être entier
-    if poids.is_integer():
+    if type(poids) == int:
+        return str(poids)
+    elif poids.is_integer():
         return str(poids)[:-2]
     else:
         return str(poids).replace('.',',')
@@ -32,8 +34,8 @@ class Arete:
         r=self.s1.r
         (dx,dy)=dxy(x1,y1,x2,y2,r)
         self.rep=canvas.create_line(x1+dx,y1+dy,x2-dx,y2-dy,
-                                    fill="gray",state=DISABLED)
-        if self.model.oriente.get()==1:
+                                    fill=defcolor['fleche'],activefill=actcolor)
+        if self.model.oriente.get():
             self.canvas.itemconfigure(self.rep,arrow="last")
         else:
             self.canvas.itemconfigure(self.rep,arrow="none")
@@ -41,15 +43,23 @@ class Arete:
 
         self.text=canvas.create_text(self.p*x2+(1-self.p)*x1,
                                      self.p*y2+(1-self.p)*y1,
-                                     fill=defcolor,activefill=actcolor)
+                                     fill=defcolor['poids'],activefill=actcolor)
         self.popup=None
         if poids is None:
-            self.ask_poids()
+            if self.model.pondere.get():
+                self.ask_poids()
+            else:
+                self.poids = 1.
+                self.model.ajoute_arete(self)
+                self.canvas.itemconfigure(self.text,state='hidden')
+                self.canvas.itemconfigure(self.text,text=strp(self.poids))
         else:
+            if self.model.pondere.get():
+                self.canvas.itemconfigure(self.text,state='hidden')
             self.model.ajoute_arete(self)
-            poids=float(self.poids)
-            self.canvas.itemconfigure(self.text,text=strp(poids))
-            self.canvas.itemconfigure(self.text,tags=(self.s1.nom,self.s2.nom))
+            self.canvas.itemconfigure(self.text,text=strp(self.poids))
+            self.canvas.itemconfigure(self.rep,tags=(self.s1.nom,self.s2.nom))
+            
 
     def ask_poids(self):
         if self.popup is None:
@@ -88,9 +98,8 @@ class Arete:
             if self.poids is None:
                 self.model.ajoute_arete(self)
             self.poids=float(poids)
-            poids=self.poids
-            self.canvas.itemconfigure(self.text,text=strp(poids))
-            self.canvas.itemconfigure(self.text,tags=(self.s1.nom,self.s2.nom))
+            self.canvas.itemconfigure(self.text,text=strp(self.poids))
+            self.canvas.itemconfigure(self.rep,tags=(self.s1.nom,self.s2.nom))
             if not self.popup is None:
                 self.label_erreur.pack_forget()
                 self.popup.pack_propagate(0)
@@ -113,10 +122,16 @@ class Arete:
         self.popup.withdraw()
 
     def set_deletecolor(self):
-        self.canvas.itemconfigure(self.text,activefill=delcolor)
+        self.canvas.itemconfigure(self.rep,activefill=delcolor)
+        self.canvas.itemconfigure(self.text,activefill=defcolor['poids'])
+        self.canvas.itemconfigure(self.text,tags=())
+        self.canvas.itemconfigure(self.rep,tags=(self.s1.nom,self.s2.nom))
 
     def set_defaultcolor(self):
+        self.canvas.itemconfigure(self.rep,activefill=defcolor['fleche'])
         self.canvas.itemconfigure(self.text,activefill=actcolor)
+        self.canvas.itemconfigure(self.text,tags=(self.s1.nom,self.s2.nom))
+        self.canvas.itemconfigure(self.rep,tags=())
 
     def update(self):
 
@@ -128,8 +143,11 @@ class Arete:
                            self.p*x2+(1-self.p)*x1,
                            self.p*y2+(1-self.p)*y1)
         self.canvas.coords(self.rep,x1+dx,y1+dy,x2-dx,y2-dy)
-        self.canvas.itemconfigure(self.text,tags=(self.s1.nom,self.s2.nom))
-        if self.model.oriente.get()==1:
+        if self.model.pondere.get():
+            self.canvas.itemconfigure(self.text,state='normal')
+        else:
+            self.canvas.itemconfigure(self.text,state='hidden')
+        if self.model.oriente.get():
             self.canvas.itemconfigure(self.rep,arrow="last")
         else:
             self.canvas.itemconfigure(self.rep,arrow="none")

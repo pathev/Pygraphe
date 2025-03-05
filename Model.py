@@ -12,7 +12,8 @@ class Model:
                      ("Suppression","del")]
         self.outil=StringVar()
         self.outil.set("create")
-        self.oriente=IntVar()
+        self.oriente=BooleanVar()
+        self.pondere=BooleanVar(value=True)
 
     def existe_sommet(self,nom):
         i=0
@@ -39,7 +40,7 @@ class Model:
     def existe_arete(self,s1,s2,o=False): # s1 et s2 sont les noms
         i=0
         trouve=False
-        B=not(o or self.oriente.get()==1)
+        B=not(o or self.oriente.get())
         while i<len(self.aretes) and not trouve:
             trouve=(self.aretes[i].s1.nom==s1 and self.aretes[i].s2.nom==s2) or (B and self.aretes[i].s1.nom==s2 and self.aretes[i].s2.nom==s1)
             i+=1
@@ -49,7 +50,7 @@ class Model:
         i=0
         trouve=False
         while i<len(self.aretes) and not trouve:
-            trouve=(self.aretes[i].s1.nom==s1 and self.aretes[i].s2.nom==s2) or (self.oriente.get()!=1 and self.aretes[i].s1.nom==s2 and self.aretes[i].s2.nom==s1)
+            trouve=(self.aretes[i].s1.nom==s1 and self.aretes[i].s2.nom==s2) or ((not self.oriente.get()) and self.aretes[i].s1.nom==s2 and self.aretes[i].s2.nom==s1)
             i+=1        
         if trouve:
             return self.aretes[i-1]
@@ -93,17 +94,23 @@ class Model:
         S=[self.sommets[i].nom for i in range(n)]
         S.sort()
         G=Graphe(n,S=S,o=self.oriente.get())
+        if self.pondere.get():
+            def p(a):
+                return a.poids
+        else:
+            def p(a):
+                return 1
         for a in self.aretes:
-            G.creer_arete_noms(a.s1.nom,a.s2.nom,a.poids)
+            G.creer_arete_noms(a.s1.nom,a.s2.nom,p(a))
         return G
 
     def get_dict(self):
 
         dic = {}
-        n=len(self.sommets)
         dic['S']=[[s.nom, s.x, s.y] for s in self.sommets]
         dic['A']=[[a.s1.nom,a.s2.nom,a.poids,a.p] for a in self.aretes]
         dic['o']=self.oriente.get()
+        dic['p']=self.pondere.get()
 
         return dic
 

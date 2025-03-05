@@ -40,10 +40,13 @@ if __name__ == '__main__':
 
     zone_graphe.grid(row=1,column=0)
 
-    frame_checks=Frame(frame_bottom,bg='white') # Options (dé)sélectionnables
+    frame_checks=Frame(frame_bottom) # Options (dé)sélectionnables
 
     check_oriente=Checkbutton(frame_checks,text="orienté",variable=model.oriente)
     check_oriente.grid(row=0,column=0)
+
+    check_pondere=Checkbutton(frame_checks,text="pondéré",variable=model.pondere)
+    check_pondere.grid(row=1,column=0)
 
     frame_checks.grid(row=0,column=0)
     frame_bottom.columnconfigure(0,weight=1)
@@ -83,5 +86,6 @@ if __name__ == '__main__':
     fen.columnconfigure(0,weight=1)
 
     model.oriente.trace("w",lambda *e:UpdateOriente(model,bouton_Euler))
+    model.pondere.trace("w",lambda *e:UpdatePondere(model))
 
     fen.mainloop()

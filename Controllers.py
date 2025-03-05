@@ -193,7 +193,8 @@ class ControllerLanceDijkstra(Button):
                                                  latex=latexBool)
                 self.popup.withdraw()
                 self.print_results(chemin,poids,code,tableau)
-            except:
+            except Exception as e:
+                raise(e)
                 self.popup.withdraw()
 
     def print_results(self,chemin,poids,code,tableau):
@@ -342,6 +343,7 @@ class ControllerCharge(Button):
             self.model.Clear()
             for nom,x,y in dic['S']:
                 Sommet(self.model,self.fen,self.canvas,x,y,nom=nom)
+            self.model.pondere.set(dic['p'])
             for s1,s2,poids,p in dic['A']:
                 Arete(self.model,self.fen,self.canvas,
                       s1=self.model.get_sommet(s1),
@@ -378,7 +380,7 @@ class ControllerTikz(Button):
         code="% Nécessite le package tikz\n"
         code+="\\begin{center}\n"
         code+="\\begin{tikzpicture}[scale=18/500,%\n"
-        if self.model.oriente.get()==1:
+        if self.model.oriente.get():
             code+="                    f/.style={->,very thick,>=stealth\'},%\n"
             fleche="[f] "
         else:
@@ -393,7 +395,11 @@ class ControllerTikz(Button):
             code+="\\node[s] ("+nom+") at ("+str(x)+","+str(500-y)+") {"+nom+"} ;\n"
 
         for s1,s2,poids,p in A:
-            code+="\\draw"+fleche+"("+s1+") -- ("+s2+") node[pos="+str(p)+",p]{$"+strp(poids)+"$} ;\n"
+            if self.model.pondere.get():
+                insert_poids = f" node[pos={str(p)},p]{{${strp(poids)}$}}"
+            else:
+                insert_poids = ""
+            code+=f"\\draw{fleche}({s1}) -- ({s2})"+insert_poids+f" ;\n"
 
         code+="\\end{tikzpicture}\n"
         code+="\\end{center}"
@@ -520,8 +526,12 @@ def ajoute_nom_fichier(filename,widget):
 
 def UpdateOriente(model,bouton_Euler):
 
-    if model.oriente.get()==1:
+    if model.oriente.get():
         bouton_Euler.config(state=DISABLED)
     else:
         bouton_Euler.config(state=NORMAL)
+    model.CallUpdates()
+
+def UpdatePondere(model):
+
     model.CallUpdates()

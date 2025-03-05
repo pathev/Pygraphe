@@ -1,6 +1,6 @@
 class Graphe:
 
-    def __init__(self,n,M=None,S=None,o=0):
+    def __init__(self,n,M=None,S=None,o=False):
         self.ordre=n
         self.oriente=o
         if M is None:
@@ -55,7 +55,7 @@ class Graphe:
 
     def creer_arete_indices(self,i1,i2,poids): # Fonction interne
         self.matrice[i1][i2]=poids
-        if not (self.oriente==1):
+        if not (self.oriente):
             self.matrice[i2][i1]=poids
 
     def creer_arete_noms(self,nom1,nom2,poids): # Fonction appelée de l’extérieur
@@ -65,7 +65,7 @@ class Graphe:
 
     def enlever_arete_indices(self,i1,i2): # Fonction interne
         self.matrice[i1][i2]=None
-        if not (self.oriente==1):
+        if not (self.oriente):
             self.matrice[i2][i1]=None
 
     def enlever_arete_noms(self,nom1,nom2): # Fonction appelée de l’extérieur
