@@ -8,7 +8,7 @@
 #         de Mars 2014              #
 #              à Mars 2025          #
 #                                   #
-# version : 1.6                     #
+# version : 1.7                     #
 #####################################
 
 from tkinter import *

@@ -15,3 +15,5 @@ v1.4 : correction d’un bug sur le grab_set() apparu suite à une version diff�
 v1.5 : ajout d’une colonne dans les représentations du tableau de l’algorithme de Dijkstra, et amélioration des lignes verticales dans ce même tableau en LaTeX.
 
 v1.6 : chargement et sauvegarde par le biais de tkinter.filedialog ; changement de codage des fichiers de sauvegarde (en fichiers json)
+
+v1.7* : graphes non pondérés ; apparence et gestion de suppression des arêtes différentes
