@@ -2,7 +2,7 @@ from tkinter import *
 from myToplevel import MyToplevel
 
 delcolor="red"
-defcolor={'fleche':'gray','poids':"black"}
+defcolor={'fleche':"gray",'poids':"black"}
 actcolor="orange"
 
 def strp(poids): # chaîne de caractère pour un float qui peut être entier
@@ -34,7 +34,8 @@ class Arete:
         r=self.s1.r
         (dx,dy)=dxy(x1,y1,x2,y2,r)
         self.rep=canvas.create_line(x1+dx,y1+dy,x2-dx,y2-dy,
-                                    fill=defcolor['fleche'],activefill=actcolor)
+                                    fill=defcolor['fleche'],
+                                    activefill=actcolor)
         if self.model.oriente.get():
             self.canvas.itemconfigure(self.rep,arrow="last")
         else:
@@ -43,7 +44,8 @@ class Arete:
 
         self.text=canvas.create_text(self.p*x2+(1-self.p)*x1,
                                      self.p*y2+(1-self.p)*y1,
-                                     fill=defcolor['poids'],activefill=actcolor)
+                                     fill=defcolor['poids'],
+                                     activefill=actcolor)
         self.popup=None
         if poids is None:
             if self.model.pondere.get():
@@ -126,12 +128,22 @@ class Arete:
         self.canvas.itemconfigure(self.text,activefill=defcolor['poids'])
         self.canvas.itemconfigure(self.text,tags=())
         self.canvas.itemconfigure(self.rep,tags=(self.s1.nom,self.s2.nom))
+        self.canvas.tag_bind(self.rep,"<Enter>",self.highlight)
+        self.canvas.tag_bind(self.rep,"<Leave>",self.delight)
 
     def set_defaultcolor(self):
         self.canvas.itemconfigure(self.rep,activefill=defcolor['fleche'])
         self.canvas.itemconfigure(self.text,activefill=actcolor)
         self.canvas.itemconfigure(self.text,tags=(self.s1.nom,self.s2.nom))
         self.canvas.itemconfigure(self.rep,tags=())
+        self.canvas.tag_unbind(self.rep,"<Enter>")
+        self.canvas.tag_unbind(self.rep,"<Leave>")
+
+    def highlight(self,evt):
+        self.canvas.itemconfigure(self.rep,width=4)
+
+    def delight(self,evt):
+        self.canvas.itemconfigure(self.rep,width=1)
 
     def update(self):
 
